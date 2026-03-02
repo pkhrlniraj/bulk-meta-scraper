@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Bulk URL Scraper",
+  "version": "1.0.0",
+  "description": "Bulk scrape Title, Meta Description, and H1 from a list of URLs.",
+  "permissions": [
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_title": "Open Scraper",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
