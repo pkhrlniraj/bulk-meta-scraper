@@ -18,3 +18,4 @@ yarn-error.log*
 # Extension specific
 *.zip
 *.crx
+._*

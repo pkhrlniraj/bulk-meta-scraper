@@ -5,7 +5,8 @@
   "description": "Bulk scrape Title, Meta Description, and H1 from a list of URLs.",
   "permissions": [
     "tabs",
-    "scripting"
+    "scripting",
+    "webRequest"
   ],
   "host_permissions": [
     "<all_urls>"

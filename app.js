@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         progressBar.style.width = `${percentage}%`;
     }
 
-    function addResultRow(url, title, metaDesc, h1, status, errorMsg = '') {
+    function addResultRow(url, httpStatus, redirects, finalUrl, title, metaDesc, h1, canonical, metaRobots, status, errorMsg = '') {
         const row = document.createElement('tr');
 
         let statusHtml = '';
@@ -94,10 +94,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         row.innerHTML = `
-            <td><a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a></td>
+            <td><a href="${url}" target="_blank" rel="noopener noreferrer" style="word-break: break-all;">${url}</a></td>
+            <td>${httpStatus || '-'}</td>
+            <td>${redirects || '0'}</td>
+            <td><a href="${finalUrl}" target="_blank" rel="noopener noreferrer" style="word-break: break-all;">${finalUrl || '-'}</a></td>
             <td>${title || '-'}</td>
             <td>${metaDesc || '-'}</td>
             <td>${h1 || '-'}</td>
+            <td>${canonical || '-'}</td>
+            <td>${metaRobots || '-'}</td>
             <td>${statusHtml}</td>
         `;
         resultsBody.appendChild(row);
@@ -105,9 +110,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Store data for copying
         scrapedData.push({
             url: url,
+            httpStatus: httpStatus || '',
+            redirects: redirects || 0,
+            finalUrl: finalUrl || url,
             title: title || '',
             metaDesc: metaDesc || '',
-            h1: h1 || ''
+            h1: h1 || '',
+            canonical: canonical || '',
+            metaRobots: metaRobots || ''
         });
     }
 
@@ -118,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const url = urlsToScrape[currentIndex];
-        const delayMs = parseInt(delaySecondsInput.value, 10) * 1000 || 2000;
+        const delayMs = parseFloat(delaySecondsInput.value) * 1000 || 2000;
 
         logDebug(`[${currentIndex + 1}/${urlsToScrape.length}] Loading: ${url}`);
 
@@ -133,19 +143,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 logDebug(`[${currentIndex + 1}/${urlsToScrape.length}] Success`);
                 addResultRow(
                     url,
+                    response.data.httpStatusCode,
+                    response.data.redirectsCount,
+                    response.data.finalUrl,
                     response.data.title,
                     response.data.metaDescription,
                     response.data.h1,
+                    response.data.canonicalUrl,
+                    response.data.metaRobots,
                     'success'
                 );
             } else {
                 const errMsg = response ? response.errorMessage : 'No response from background script';
                 logDebug(`[${currentIndex + 1}/${urlsToScrape.length}] Failed: ${errMsg}`);
-                addResultRow(url, '', '', '', 'error', errMsg);
+                addResultRow(url, '', '', '', '', '', '', '', '', 'error', errMsg);
             }
         } catch (error) {
             logDebug(`[${currentIndex + 1}/${urlsToScrape.length}] Error: ${error.message}`);
-            addResultRow(url, '', '', '', 'error', error.message);
+            addResultRow(url, '', '', '', '', '', '', '', '', 'error', error.message);
         }
 
         currentIndex++;
@@ -181,10 +196,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Create TSV format: URL \t Title \t Meta \t H1 \n
-        const header = "URL\tTitle\tMeta Description\tH1\n";
+        // Create TSV format: URL \t Status \t Redirects \t Final URL \t Title \t Meta \t H1 \t Canonical \t Meta Robots \n
+        const header = "URL\tStatus Code\tRedirects\tFinal URL\tTitle\tMeta Description\tH1\tCanonical URL\tMeta Robots\n";
         const rows = scrapedData.map(d => {
-            return `${sanitizeForTSV(d.url)}\t${sanitizeForTSV(d.title)}\t${sanitizeForTSV(d.metaDesc)}\t${sanitizeForTSV(d.h1)}`;
+            return `${sanitizeForTSV(d.url)}\t${sanitizeForTSV(d.httpStatus)}\t${sanitizeForTSV(d.redirects)}\t${sanitizeForTSV(d.finalUrl)}\t${sanitizeForTSV(d.title)}\t${sanitizeForTSV(d.metaDesc)}\t${sanitizeForTSV(d.h1)}\t${sanitizeForTSV(d.canonical)}\t${sanitizeForTSV(d.metaRobots)}`;
         }).join('\n');
 
         const tsvData = header + rows;
