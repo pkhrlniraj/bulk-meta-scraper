@@ -1,11 +1,12 @@
 # Bulk Meta Scraper
 
-A robust Google Chrome extension designed for SEO professionals and data analysts to efficiently bulk-scrape Page Titles, Meta Descriptions, and H1 tags from a list of URLs. 
+A robust Google Chrome extension designed for SEO professionals and data analysts to efficiently bulk-scrape critical SEO data points from a list of URLs, right from within the browser.
 
 ## Features
 
+- **Comprehensive Extraction:** Extracts Page Titles, Meta Descriptions, H1 tags, Canonical URLs, Meta Robots tags, HTTP Status Codes, and tracks Redirect chains.
 - **Background Execution:** Natively utilizes Chrome's background service workers to open and scrape tabs silently. This allows the extension to bypass login walls by using your existing browser authenticated sessions!
-- **Customizable Request Delay:** Built-in pacing controls (1-120 seconds) to prevent triggering rate-limits or captchas on target websites.
+- **Fast-Paced Scraping:** Precise delay controls (down to 0.1 seconds) to scrape at high speeds, or pace requests to avoid rate limits on target websites.
 - **Clean UI:** A modern, full-page interface for managing large lists of URLs seamlessly.
 - **Progress Tracking:** Real-time visual progress bar and a detailed debugger log.
 - **1-Click Export:** Easily copy the scraped data as Tab-Separated Values (TSV) for direct, perfectly formatted pasting into Google Sheets or Excel.
